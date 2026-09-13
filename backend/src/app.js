@@ -2,10 +2,13 @@ const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/User");
 
+// Create Express app
 const app = express();
 
+// Parse JSON request body
 app.use(express.json());
 
+// Create a new user
 app.post("/signup", async (req, res) => {
   try {
     if (!req.body) {
@@ -21,6 +24,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+// Get user by ID
 app.get("/getUser/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -33,8 +37,14 @@ app.get("/getUser/:id", async (req, res) => {
   }
 });
 
+// Get users by email
+app.get("/getAllUsers", async (req, res) => {
+  const user = await User.find({ emailId: "rahulsharma@example.com" });
+  res.status(200).json({ message: "User fetched successfully", user });
+});
 
-app.delete("/user/:id" , async (req ,res) => {
+// Delete user by ID
+app.delete("/user/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -48,17 +58,23 @@ app.delete("/user/:id" , async (req ,res) => {
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
-})
-
-app.get("/getAllUsers", async (req, res) => {
-  const user = await User.find({emailId : "rahulsharma@example.com"});
-  res.status(200).json({ message: "User fetched successfully", user });
 });
 
+// Update user by ID
 app.patch("/user/:id", async (req, res) => {
   try {
+
+    const allowedUpdates = ["password", "phoneNumber"];
+
     if (!req.body || Object.keys(req.body).length === 0) {
       return res.status(400).json({ message: "Request body is empty" });
+    }
+
+    const updates = Object.keys(req.body);
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+    if (!isValidOperation) {
+      return res.status(400).json({ message: "Invalid updates" });
     }
 
     const user = await User.findByIdAndUpdate(
@@ -77,6 +93,7 @@ app.patch("/user/:id", async (req, res) => {
   }
 });
 
+// Connect DB and start server
 connectDB()
   .then(() => {
     console.log("database connection successful");
