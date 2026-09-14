@@ -5,6 +5,7 @@ const { validateSignupData } = require("./helper/validator");
 const bcrypt = require("bcrypt");
 var cookieParser = require("cookie-parser");
 var jwt = require("jsonwebtoken");
+const { authMiddleWare } = require("./middleware/auth");
 
 // Create Express app
 const app = express();
@@ -57,9 +58,9 @@ app.post("/login", async (req, res) => {
       throw new Error("Invalid credentials");
     }
 
-    var token = jwt.sign({ userId: user._id }, "shhhhh");
+    var token = jwt.sign({ userId: user._id }, "shhhhh", { expiresIn: "1h" });
 
-    res.cookie("token", token);
+    res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
     res.status(200).json({ message: "Login successful", user });
   } catch (error) {
     res.status(500).json({ "Error: ": error.message });
@@ -67,78 +68,10 @@ app.post("/login", async (req, res) => {
 });
 
 // Get user by ID
-app.get("/user/:id", async (req, res) => {
+app.get("/user/:id", authMiddleWare, async (req, res) => {
   try {
-    var decoded = jwt.verify(req.cookies.token, "shhhhh");
-
-    if (!decoded || !decoded.userId) {
-      throw new Error("Invalid token");
-    }
-
-    const userId = decoded.userId;
-    const user = await User.findById(userId);
-
-    if (!user) {
-      throw new Error("User not found");
-    }
+    user = req.user;
     res.status(200).json({ message: "User fetched successfully", user });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Get users by email
-app.get("/getAllUsers", async (req, res) => {
-  const user = await User.find({ emailId: "rahulsharma@example.com" });
-  res.status(200).json({ message: "User fetched successfully", user });
-});
-
-// Delete user by ID
-app.delete("/user/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      const error = new Error("User not found");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    await User.findByIdAndDelete(user._id);
-    res.status(200).json({ message: "User deleted successfully" });
-  } catch (error) {
-    res.status(error.statusCode || 500).json({ message: error.message });
-  }
-});
-
-// Update user by ID
-app.patch("/user/:id", async (req, res) => {
-  try {
-    const allowedUpdates = ["password", "phoneNumber"];
-
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ message: "Request body is empty" });
-    }
-
-    const updates = Object.keys(req.body);
-    const isValidOperation = updates.every((update) =>
-      allowedUpdates.includes(update),
-    );
-
-    if (!isValidOperation) {
-      return res.status(400).json({ message: "Invalid updates" });
-    }
-
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true, runValidators: true },
-    );
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({ message: "User updated successfully", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
