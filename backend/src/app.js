@@ -12,8 +12,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 // routers
-app.use("/", authRouter);
-app.use("/", profileRouter);
+app.use("/auth", authRouter);
+app.use("/profile", profileRouter);
 
 // Connect DB and start server
 connectDB()

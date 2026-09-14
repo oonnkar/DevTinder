@@ -2,6 +2,8 @@ var jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const authMiddleWare = async (req, res, next) => {
+  const token = req?.cookies?.token;
+  if (!token) return res.status(401).json({ message: "No token provided" });
   var decoded = jwt.verify(req.cookies.token, "shhhhh");
 
   if (!decoded || !decoded.userId) {
@@ -18,6 +20,4 @@ const authMiddleWare = async (req, res, next) => {
   next();
 };
 
-module.exports = {
-  authMiddleWare,
-};
+module.exports = authMiddleWare;
