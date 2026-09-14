@@ -3,12 +3,15 @@ const connectDB = require("./config/database");
 const User = require("./models/User");
 const { validateSignupData } = require("./helper/validator");
 const bcrypt = require("bcrypt");
+var cookieParser = require("cookie-parser");
+var jwt = require("jsonwebtoken");
 
 // Create Express app
 const app = express();
 
 // Parse JSON request body
 app.use(express.json());
+app.use(cookieParser());
 
 // Create a new user
 app.post("/signup", async (req, res) => {
@@ -44,29 +47,39 @@ app.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
     const user = await User.findOne({ emailId });
-    
+
     if (!user) {
       throw new Error("Invalid credentials");
     }
-    
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new Error("Invalid credentials");
     }
-    
+
+    var token = jwt.sign({ userId: user._id }, "shhhhh");
+
+    res.cookie("token", token);
     res.status(200).json({ message: "Login successful", user });
   } catch (error) {
     res.status(500).json({ "Error: ": error.message });
   }
 });
 
-
 // Get user by ID
-app.get("/getUser/:id", async (req, res) => {
+app.get("/user/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    var decoded = jwt.verify(req.cookies.token, "shhhhh");
+
+    if (!decoded || !decoded.userId) {
+      throw new Error("Invalid token");
+    }
+
+    const userId = decoded.userId;
+    const user = await User.findById(userId);
+
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throw new Error("User not found");
     }
     res.status(200).json({ message: "User fetched successfully", user });
   } catch (error) {
