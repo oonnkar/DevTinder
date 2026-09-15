@@ -4,6 +4,7 @@ const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/User");
 
 const userRouter = express.Router();
+const selectedUserFields = ["firstName", "lastName", "emailId"];
 
 userRouter.get("/requests/received", authMiddleWare, async (req, res) => {
   try {
@@ -11,7 +12,7 @@ userRouter.get("/requests/received", authMiddleWare, async (req, res) => {
     const connectionRequests = await ConnectionRequest.find({
       toUser: loggedInUser._id,
       status: "interested",
-    }).populate("fromUser", "firstName lastName emailId");
+    }).populate("fromUser", selectedUserFields);
 
     res
       .status(200)
@@ -32,8 +33,8 @@ userRouter.get("/connections", authMiddleWare, async (req, res) => {
       { toUser: loggedInUser._id, status: "accepted" },
     ],
   })
-    .populate("fromUser", "firstName lastName emailId")
-    .populate("toUser", "firstName lastName emailId");
+    .populate("fromUser", selectedUserFields)
+    .populate("toUser", selectedUserFields);
 
   const data = connectionRequests.map((request) => {
     if (request.fromUser._id.toString() === loggedInUser._id.toString()) {
@@ -51,6 +52,11 @@ userRouter.get("/connections", authMiddleWare, async (req, res) => {
 
 userRouter.get("/feed", authMiddleWare, async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+    limit > 50 ? (limit = 50) : (limit = limit);
+    const skip = (page - 1) * limit;
+
     const usersToHide = await ConnectionRequest.find({
       $or: [{ fromUser: req.user._id }, { toUser: req.user._id }],
     }).select("fromUser toUser");
@@ -66,7 +72,10 @@ userRouter.get("/feed", authMiddleWare, async (req, res) => {
         $nin: Array.from(userIdsToHide),
         $ne: req.user._id,
       },
-    }).select("firstName lastName emailId");
+    })
+      .select(selectedUserFields)
+      .skip(skip)
+      .limit(limit);
 
     res
       .status(200)
