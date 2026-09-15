@@ -30,16 +30,7 @@ connectionRequestSchema.pre('save', async function() {
     throw new Error('A user cannot send a connection request to themselves.');
   }
 
-  const existingRequest = await mongoose.model('ConnectionRequest').findOne({
-    $or: [
-      { fromUser: this.fromUser, toUser: this.toUser },
-      { fromUser: this.toUser, toUser: this.fromUser }
-    ],
-  });
-
-  if (existingRequest) {
-    throw new Error('A connection request already exists between these users.');
-  }
+ 
 })
 
 const ConnectionRequest = mongoose.model('ConnectionRequest', connectionRequestSchema);
