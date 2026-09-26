@@ -15,7 +15,7 @@ const Login = () => {
     event.preventDefault();
     try {
       const res = await axios.post(
-        `${BACKEND_API}auth/login`,
+        `${BACKEND_API}/auth/login`,
         {
           emailId: email,
           password,
@@ -25,7 +25,7 @@ const Login = () => {
         },
       );
       dispatch(addUser(res.data.user));
-      navigate("/feed")
+      navigate("/feed");
     } catch (error) {
       console.error("Login failed:", error);
     }
