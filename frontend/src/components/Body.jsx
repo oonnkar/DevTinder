@@ -13,6 +13,7 @@ const Body = () => {
 
   const fetchUser = async () => {
     try {
+      if(!userData) return;
       const data = await axios.get(BACKEND_API + "/profile/view", {
         withCredentials: true,
       });

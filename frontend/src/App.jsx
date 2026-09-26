@@ -6,7 +6,7 @@ import Profile from "./components/Profile";
 import Body from "./components/Body";
 import {Provider} from 'react-redux'
 import appStore from "./utils/__redux_store__/appStore";
-import Feed from "./components/feed";
+import Feed from "./components/Feed";
 
 const App = () => {
   return (
