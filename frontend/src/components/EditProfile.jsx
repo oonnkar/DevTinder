@@ -15,8 +15,6 @@ const EditProfile = ({ user }) => {
   const [skills, setSkills] = useState(user?.skills || fallbackValue);
 
   async function handleFormSubmit() {
-    console.log("button clicked");
-
     try {
       const res = await axios.patch(
         BACKEND_API + "/profile/edit",
@@ -30,7 +28,6 @@ const EditProfile = ({ user }) => {
         },
         { withCredentials: true },
       );
-      console.log(res);
     } catch (error) {
       console.error("Profile update failed:", error);
     }
