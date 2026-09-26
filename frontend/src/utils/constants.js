@@ -1,1 +1,3 @@
-export const BACKEND_API = "http://localhost:3000";
+export const BACKEND_API = import.meta.env.DEV
+  ? "/api"
+  : "http://localhost:3000";

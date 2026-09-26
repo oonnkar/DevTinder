@@ -3,25 +3,33 @@ import axios from "axios";
 import { BACKEND_API } from "../utils/constants";
 import { useEffect } from "react";
 
-const EditProfile = ({user}) => {
+const EditProfile = ({ user }) => {
   const fallbackValue = "Something else";
   const [firstName, setFirstName] = useState(user?.firstName || fallbackValue);
   const [lastName, setLastName] = useState(user?.lastName || fallbackValue);
-  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || fallbackValue);
+  const [phoneNumber, setPhoneNumber] = useState(
+    user?.phoneNumber || fallbackValue,
+  );
   const [gender, setGender] = useState(user?.gender || fallbackValue);
   const [about, setAbout] = useState(user?.about || fallbackValue);
   const [skills, setSkills] = useState(user?.skills || fallbackValue);
 
   async function handleFormSubmit() {
+    console.log("button clicked");
+
     try {
-      const res = await axios.patch(BACKEND_API + "/profile/edit", {
-        firstName,
-        lastName,
-        phoneNumber,
-        gender,
-        about,
-        skills,
-      }, {withCredentials: true});
+      const res = await axios.patch(
+        BACKEND_API + "/profile/edit",
+        {
+          firstName,
+          lastName,
+          phoneNumber,
+          gender,
+          about,
+          skills,
+        },
+        { withCredentials: true },
+      );
       console.log(res);
     } catch (error) {
       console.error("Profile update failed:", error);

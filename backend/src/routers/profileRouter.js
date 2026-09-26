@@ -32,6 +32,9 @@ profileRouter.patch("/edit", authMiddleWare, async (req, res) => {
       throw new Error("Invalid updates");
     }
 
+    console.log("req received");
+    
+
     Object.keys(req.body).forEach((update) => {
       user[update] = req.body[update];
     });
