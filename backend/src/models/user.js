@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema({
     minlength: 1,
     maxlength: 10,
   },
+  profilePicture: {
+    type: String,
+    default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWUhUmv0AVrUN5VQEu7EyVIhoYt52DX0ea4AEDARa3KA&s=10",
+  }
 });
 
 userSchema.methods.getJwt = async function () {
