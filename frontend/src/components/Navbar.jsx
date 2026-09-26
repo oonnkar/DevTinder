@@ -3,15 +3,12 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../utils/__redux_store__/userSlice";
 import { Link, useNavigate } from "react-router-dom";
-import Profile from "./Profile";
-import Feed from "./feed";
 import { BACKEND_API } from "../utils/constants";
 const Navbar = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
- 
-  
+  const navigate = useNavigate();
+
   async function handleLogout() {
     try {
       await axios.post(
@@ -22,10 +19,7 @@ const Navbar = () => {
       dispatch(removeUser());
       navigate("/login");
     } catch (error) {
-      console.error(
-        "Logout failed:",
-        error
-      );
+      console.error("Logout failed:", error);
     }
   }
 
@@ -52,12 +46,12 @@ const Navbar = () => {
             >
               <li>
                 <Link to="/profile" className="rounded-lg">
-                  <Profile />
+                  Profile
                 </Link>
               </li>
               <li>
                 <Link to="/feed" className="rounded-lg">
-                  <Feed />
+                  Feed
                 </Link>
               </li>
               <li>
