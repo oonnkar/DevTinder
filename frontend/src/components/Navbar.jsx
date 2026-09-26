@@ -1,16 +1,32 @@
 import React from "react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../utils/__redux_store__/userSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Profile from "./Profile";
 import Feed from "./feed";
-
+import { BACKEND_API } from "../utils/constants";
 const Navbar = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
-
-  function handleLogout() {
-    dispatch(removeUser());
+  const navigate = useNavigate(); 
+ 
+  
+  async function handleLogout() {
+    try {
+      await axios.post(
+        BACKEND_API + "/auth/logout",
+        {},
+        { withCredentials: true },
+      );
+      dispatch(removeUser());
+      navigate("/login");
+    } catch (error) {
+      console.error(
+        "Logout failed:",
+        error
+      );
+    }
   }
 
   return (

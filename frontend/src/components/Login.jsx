@@ -8,9 +8,11 @@ import { BACKEND_API } from "../utils/constants";
 const Login = () => {
   const [email, setEmail] = useState("priyaaa.patel@example.com");
   const [password, setPassword] = useState("Priyaa@2026");
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // TODO: when somebody logs in with wrong credentials we want them to show message sent by backend
   async function handleLogin(event) {
     event.preventDefault();
     try {
@@ -18,16 +20,16 @@ const Login = () => {
         `${BACKEND_API}/auth/login`,
         {
           emailId: email,
-          password,
+          password : password,
         },
         {
           withCredentials: true,
         },
       );
       dispatch(addUser(res.data.user));
-      navigate("/feed");
+      navigate("/feed")
     } catch (error) {
-      console.error("Login failed:", error);
+      setError(error);
     }
   }
 
@@ -80,6 +82,15 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </fieldset>
+
+            {error && (
+              <div
+                role="alert"
+                className="rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+              >
+                {error.response?.data?.message || error.message || error}
+              </div>
+            )}
 
             <div className="pt-2">
               <button
