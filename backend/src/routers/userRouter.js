@@ -46,9 +46,7 @@ userRouter.get("/connections", authMiddleWare, async (req, res) => {
 
   const data = connectionRequests.map((request) => {
     if (request.fromUser._id.toString() === loggedInUser._id.toString()) {
-      return {
-        user: request.toUser,
-      };
+      return request.toUser;
     }
     return request.fromUser;
   });

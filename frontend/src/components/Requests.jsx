@@ -1,23 +1,26 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addConnectionRequests } from "../utils/__redux_store__/connectionsSlice";
+import {
+  addConnectionRequests,
+  removeConnectionRequest,
+} from "../utils/__redux_store__/connectionsSlice";
 
 const Requests = () => {
   const connectionRequests = useSelector((store) => store.connection.requests);
-  console.log(connectionRequests);
 
   const dispatch = useDispatch();
   const fetchData = async () => {
     try {
-      if (connectionRequests) return;
+      if (connectionRequests !== null && connectionRequests !== undefined)
+        return;
       const res = await axios.get(
         "http://localhost:3000/user/requests/received",
         { withCredentials: true },
       );
       dispatch(addConnectionRequests(res.data.data));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -25,7 +28,19 @@ const Requests = () => {
     fetchData();
   }, []);
 
-  return !connectionRequests ? (
+  const handleRequestClick = async (reqStatus, reqId) => {
+    try {
+      const res = await axios.post(
+        `http://localhost:3000/request/review/${reqStatus}/${reqId}`,
+        {},
+        { withCredentials: true },
+      );
+      dispatch(removeConnectionRequest(reqId));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  return !connectionRequests || connectionRequests.length === 0 ? (
     <div>No Connections Requests found</div>
   ) : (
     <div className="min-h-screen bg-slate-950 px-4 py-10">
@@ -90,12 +105,18 @@ const Requests = () => {
                 </div>
                 <div className="flex justify-end gap-3 border-t border-slate-800 bg-slate-900/70 px-6 py-4">
                   <button
+                    onClick={() => {
+                      handleRequestClick("rejected", request._id);
+                    }}
                     type="button"
                     className="rounded-lg border border-slate-600 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-rose-400 hover:bg-rose-400/10 hover:text-rose-300"
                   >
                     Reject
                   </button>
                   <button
+                    onClick={() => {
+                      handleRequestClick("accepted", request._id);
+                    }}
                     type="button"
                     className="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
                   >
@@ -109,6 +130,6 @@ const Requests = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Requests
+export default Requests;

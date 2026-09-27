@@ -11,14 +11,14 @@ const Connections = () => {
   const dispatch = useDispatch();
   const fetchData = async () => {
     try {
-      if (connections) return;
+      if (Array.isArray(connections)) return;
       const res = await axios.get("http://localhost:3000/user/connections", {
         withCredentials: true,
       });
 
-      dispatch(addConnections(res.data.connections));
+      dispatch(addConnections(res.data.connections || []));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -41,12 +41,13 @@ const Connections = () => {
       <div className="mx-auto max-w-2xl">
         <h1 className="mb-6 text-3xl font-bold text-slate-100">Connections</h1>
         <ul className="space-y-4">
-          {connections.map((user) => {
-            const connectionUser = user.user ;
+          {connections.map((user, index) => {
+            const connectionUser = user?.user || user;
+            const userId = connectionUser?._id || user?._id || index;
 
             return (
               <li
-                key={connectionUser._id}
+                key={userId}
                 className="overflow-hidden rounded-2xl bg-slate-900 shadow-lg ring-1 ring-slate-700/80"
               >
                 <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-start">

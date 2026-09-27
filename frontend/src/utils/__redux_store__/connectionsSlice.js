@@ -1,4 +1,4 @@
-import { createSlice, configureStore } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const connectionsSlice = createSlice({
   name: "connections",
@@ -10,8 +10,10 @@ const connectionsSlice = createSlice({
     addConnectionRequests: (state, action) => {
       state.requests = action.payload;
     },
-    removeConnectionRequests: (state) => {
-      state.requests = null;
+    removeConnectionRequest: (state, action) => {
+      state.requests = state.requests.filter(
+        (req) => req._id !== action.payload,
+      );
     },
     addConnections: (state, action) => {
       state.connections = action.payload;
@@ -22,6 +24,10 @@ const connectionsSlice = createSlice({
   },
 });
 
-export const { addConnectionRequests, removeConnectionRequests , addConnections, removeConnections } =
-  connectionsSlice.actions;
+export const {
+  addConnectionRequests,
+  removeConnectionRequest,
+  addConnections,
+  removeConnections,
+} = connectionsSlice.actions;
 export default connectionsSlice.reducer;
