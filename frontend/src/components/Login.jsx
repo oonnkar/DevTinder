@@ -5,28 +5,27 @@ import { useNavigate } from "react-router-dom";
 import { addUser } from "../utils/__redux_store__/userSlice";
 import { BACKEND_API } from "../utils/constants";
 
+const getErrorMessage = (error, fallback) => {
+  const message =
+    error?.response?.data?.message ||
+    error?.response?.data?.error ||
+    error?.response?.data?.["Error:"] ||
+    error?.message ||
+    fallback;
+
+  return message || fallback;
+};
+
 const Login = () => {
-  const urr = {
-    firstName: "Yash",
-    lastName: "Iyer",
-    emailId: "yash.iyer13@example.com",
-    password: "User@1012Strong",
-    phoneNumber: "9000000012",
-    gender: "male",
-    about:
-      "Yash is a software developer from Bengaluru who enjoys building web applications.",
-    skills: ["JavaScript", "Node.js", "Python"],
-    profilePicture: "https://randomuser.me/api/portraits/men/13.jpg",
-  };
-  const [email, setEmail] = useState(urr.emailId);
-  const [password, setPassword] = useState(urr.password);
-  const [firstName, setFirstName] = useState(urr.firstName);
-  const [lastName, setLastName] = useState(urr.lastName);
-  const [phoneNumber, setPhoneNumber] = useState(urr.phoneNumber);
-  const [gender, setGender] = useState(urr.gender);
-  const [about, setAbout] = useState(urr.about);
-  const [skills, setSkills] = useState(urr.skills.join(", "));
-  const [profilePicture, setProfilePicture] = useState(urr.profilePicture);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [gender, setGender] = useState("");
+  const [about, setAbout] = useState("");
+  const [skills, setSkills] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const [error, setError] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const dispatch = useDispatch();
@@ -34,34 +33,74 @@ const Login = () => {
 
   async function handleLogin(event) {
     event.preventDefault();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail || !trimmedPassword) {
+      setError("Please enter both your email and password.");
+      return;
+    }
+
     setError("");
     try {
       const res = await axios.post(
         `${BACKEND_API}/auth/login`,
-        { emailId: email, password },
+        { emailId: trimmedEmail, password: trimmedPassword },
         {
           withCredentials: true,
         },
       );
       dispatch(addUser(res.data.user));
       navigate("/feed");
-    } catch (error) {
-      setError(error);
+    } catch (loginError) {
+      setError(getErrorMessage(loginError, "Unable to log in. Please try again."));
     }
   }
 
   async function handleSignup(event) {
     event.preventDefault();
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    const trimmedPhoneNumber = phoneNumber.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (
+      !trimmedFirstName ||
+      !trimmedLastName ||
+      !trimmedEmail ||
+      !trimmedPassword ||
+      !trimmedPhoneNumber
+    ) {
+      setError("Please complete all required fields.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (trimmedPassword.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
+    if (trimmedPhoneNumber.length < 7) {
+      setError("Please enter a valid phone number.");
+      return;
+    }
+
     setError("");
     try {
       const res = await axios.post(
         `${BACKEND_API}/auth/signup`,
         {
-          firstName,
-          lastName,
-          emailId: email,
-          password,
-          phoneNumber,
+          firstName: trimmedFirstName,
+          lastName: trimmedLastName,
+          emailId: trimmedEmail,
+          password: trimmedPassword,
+          phoneNumber: trimmedPhoneNumber,
           gender,
           about,
           skills: skills
@@ -72,11 +111,11 @@ const Login = () => {
         },
         { withCredentials: true },
       );
-      
-      dispatch(addUser(res.data));
+
+      dispatch(addUser(res.data.data || res.data.user || res.data));
       navigate("/feed");
-    } catch (error) {
-      setError(error);
+    } catch (signupError) {
+      setError(getErrorMessage(signupError, "Unable to create your account. Please try again."));
     }
   }
 
@@ -239,9 +278,9 @@ const Login = () => {
             {error && (
               <div
                 role="alert"
-                className="rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+                className="rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200"
               >
-                {error.response?.data?.message || error.message || error}
+                {error}
               </div>
             )}
 

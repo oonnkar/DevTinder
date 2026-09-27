@@ -3,49 +3,64 @@ import axios from "axios";
 import { BACKEND_API } from "../utils/constants";
 import { useEffect } from "react";
 
-const EditProfile = ({ user }) => {
-  const fallbackValue = "Something else";
-  const [firstName, setFirstName] = useState(user?.firstName || fallbackValue);
-  const [lastName, setLastName] = useState(user?.lastName || fallbackValue);
-  const [phoneNumber, setPhoneNumber] = useState(
-    user?.phoneNumber || fallbackValue,
+const getErrorMessage = (error, fallback) => {
+  return (
+    error?.response?.data?.message ||
+    error?.response?.data?.error ||
+    error?.response?.data?.["Error:"] ||
+    error?.message ||
+    fallback
   );
-  const [gender, setGender] = useState(user?.gender || fallbackValue);
-  const [about, setAbout] = useState(user?.about || fallbackValue);
-  const [skills, setSkills] = useState(user?.skills || fallbackValue);
+};
+
+const EditProfile = ({ user }) => {
+  const [firstName, setFirstName] = useState(user?.firstName || "");
+  const [lastName, setLastName] = useState(user?.lastName || "");
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || "");
+  const [gender, setGender] = useState(user?.gender || "");
+  const [about, setAbout] = useState(user?.about || "");
+  const [skills, setSkills] = useState(user?.skills || "");
   const [popupMessage, setPopupMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   async function handleFormSubmit() {
+    if (!firstName.trim() || !lastName.trim() || !phoneNumber.trim()) {
+      setPopupMessage("Please fill in your first name, last name, and phone number.");
+      setIsError(true);
+      return;
+    }
+
     try {
       await axios.patch(
         BACKEND_API + "/profile/edit",
         {
-          firstName,
-          lastName,
-          phoneNumber,
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          phoneNumber: phoneNumber.trim(),
           gender,
-          about,
-          skills,
+          about: about.trim(),
+          skills: skills.trim(),
         },
         { withCredentials: true },
       );
-      
+
       setPopupMessage("Profile saved successfully.");
+      setIsError(false);
     } catch (error) {
-      console.error("Profile update failed:", error);
       setPopupMessage(
-        error.response?.data?.message || "Could not save your profile. Please try again.",
+        getErrorMessage(error, "Could not save your profile. Please try again."),
       );
+      setIsError(true);
     }
   }
 
   useEffect(() => {
-    setFirstName(user?.firstName || fallbackValue);
-    setLastName(user?.lastName || fallbackValue);
-    setPhoneNumber(user?.phoneNumber || fallbackValue);
-    setGender(user?.gender || fallbackValue);
-    setAbout(user?.about || fallbackValue);
-    setSkills(user?.skills || fallbackValue);
+    setFirstName(user?.firstName || "");
+    setLastName(user?.lastName || "");
+    setPhoneNumber(user?.phoneNumber || "");
+    setGender(user?.gender || "");
+    setAbout(user?.about || "");
+    setSkills(user?.skills || "");
   }, [user]);
 
   return (
@@ -53,14 +68,21 @@ const EditProfile = ({ user }) => {
       {popupMessage && (
         <div
           role="alert"
-          className="fixed left-1/2 top-6 z-50 flex -translate-x-1/2 items-center gap-4 rounded-xl border border-white/10 bg-slate-900 px-5 py-4 text-white shadow-xl"
+          className={`fixed left-1/2 top-6 z-50 flex -translate-x-1/2 items-center gap-4 rounded-xl border px-5 py-4 text-white shadow-xl ${
+            isError
+              ? "border-red-400/40 bg-red-500/10 text-red-100"
+              : "border-emerald-400/40 bg-emerald-500/10 text-emerald-100"
+          }`}
         >
           <span>{popupMessage}</span>
           <button
             type="button"
             aria-label="Dismiss notification"
             className="text-slate-300 hover:text-white"
-            onClick={() => setPopupMessage("")}
+            onClick={() => {
+              setPopupMessage("");
+              setIsError(false);
+            }}
           >
             ×
           </button>

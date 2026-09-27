@@ -3,8 +3,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../utils/__redux_store__/connectionsSlice";
 import { useEffect } from "react";
+import { BACKEND_API } from "../utils/constants";
 
-// http://localhost:3000/user/connections
 const Connections = () => {
   const connections = useSelector((store) => store.connection?.connections);
 
@@ -12,7 +12,7 @@ const Connections = () => {
   const fetchData = async () => {
     try {
       if (Array.isArray(connections)) return;
-      const res = await axios.get("http://localhost:3000/user/connections", {
+      const res = await axios.get(BACKEND_API+"/connections", {
         withCredentials: true,
       });
 

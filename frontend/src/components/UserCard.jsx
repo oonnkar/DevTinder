@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../utils/__redux_store__/feedSlice";
+import { BACKEND_API } from "../utils/constants";
 
 const UserCard = ({ user }) => {
   const { _id: userId, firstName, lastName, emailId, profilePicture } = user;
@@ -10,7 +11,7 @@ const UserCard = ({ user }) => {
   async function handleClick(status, userId) {
     try {
       const res = await axios.post(
-        `http://localhost:3000/request/send/${status}/${userId}`, {}, {withCredentials: true},
+        `${BACKEND_API}/request/send/${status}/${userId}`, {}, {withCredentials: true},
       );
       console.log(res);
 

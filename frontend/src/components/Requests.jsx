@@ -5,6 +5,7 @@ import {
   addConnectionRequests,
   removeConnectionRequest,
 } from "../utils/__redux_store__/connectionsSlice";
+import { BACKEND_API } from "../utils/constants";
 
 const Requests = () => {
   const connectionRequests = useSelector((store) => store.connection?.requests);
@@ -15,7 +16,7 @@ const Requests = () => {
       if (connectionRequests !== null && connectionRequests !== undefined)
         return;
       const res = await axios.get(
-        "http://localhost:3000/user/requests/received",
+        BACKEND_API+"/user/requests/received",
         { withCredentials: true },
       );
       dispatch(addConnectionRequests(res.data.data));
@@ -31,7 +32,7 @@ const Requests = () => {
   const handleRequestClick = async (reqStatus, reqId) => {
     try {
       const res = await axios.post(
-        `http://localhost:3000/request/review/${reqStatus}/${reqId}`,
+        `${BACKEND_API}/request/review/${reqStatus}/${reqId}`,
         {},
         { withCredentials: true },
       );

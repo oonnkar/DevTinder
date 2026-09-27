@@ -3,7 +3,8 @@ import babel from "@rolldown/plugin-babel";
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 
-// https://vite.dev/config/
+const BACKEND_API = "http://localhost:3000";
+
 export default defineConfig({
   plugins: [
     tailwindcss(),
@@ -13,7 +14,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
+        target: BACKEND_API,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
