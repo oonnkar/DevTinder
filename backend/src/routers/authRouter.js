@@ -36,9 +36,13 @@ authRouter.post("/signup", async (req, res) => {
       about,
       skills,
     });
+    
+    const savedUser = await user.save();
+    const token = await savedUser.getJwt();
 
-    await user.save();
-    res.status(201).json({ message: "User created successfully", user });
+
+    res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
+    res.status(201).json({ message: "User created successfully", data : user });
   } catch (error) {
     res.status(500).json({ "Error: ": error.message });
   }

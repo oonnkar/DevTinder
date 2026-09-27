@@ -7,8 +7,8 @@ import Body from "./components/Body";
 import { Provider } from "react-redux";
 import appStore from "./utils/__redux_store__/appStore";
 import Feed from "./components/Feed";
-import Connections from './components/Connections'
-import Requests from './components/Requests'
+import Connections from "./components/Connections";
+import Requests from "./components/Requests";
 
 const App = () => {
   return (
@@ -19,7 +19,10 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/feed" element={<Feed></Feed>}></Route>
-            <Route path="/connections" element={<Connections></Connections>}></Route>
+            <Route
+              path="/connections"
+              element={<Connections></Connections>}
+            ></Route>
             <Route path="/requests" element={<Requests></Requests>}></Route>
           </Route>
         </Routes>

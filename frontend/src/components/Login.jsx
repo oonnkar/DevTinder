@@ -7,30 +7,73 @@ import { BACKEND_API } from "../utils/constants";
 
 const Login = () => {
   const urr = {
-    emailId: "aarav.sharma1@example.com",
-    password: "User@1000Strong",
+    firstName: "Yash",
+    lastName: "Iyer",
+    emailId: "yash.iyer13@example.com",
+    password: "User@1012Strong",
+    phoneNumber: "9000000012",
+    gender: "male",
+    about:
+      "Yash is a software developer from Bengaluru who enjoys building web applications.",
+    skills: ["JavaScript", "Node.js", "Python"],
+    profilePicture: "https://randomuser.me/api/portraits/men/13.jpg",
   };
   const [email, setEmail] = useState(urr.emailId);
   const [password, setPassword] = useState(urr.password);
+  const [firstName, setFirstName] = useState(urr.firstName);
+  const [lastName, setLastName] = useState(urr.lastName);
+  const [phoneNumber, setPhoneNumber] = useState(urr.phoneNumber);
+  const [gender, setGender] = useState(urr.gender);
+  const [about, setAbout] = useState(urr.about);
+  const [skills, setSkills] = useState(urr.skills.join(", "));
+  const [profilePicture, setProfilePicture] = useState(urr.profilePicture);
   const [error, setError] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // TODO: when somebody logs in with wrong credentials we want them to show message sent by backend
   async function handleLogin(event) {
     event.preventDefault();
+    setError("");
     try {
       const res = await axios.post(
         `${BACKEND_API}/auth/login`,
-        {
-          emailId: email,
-          password: password,
-        },
+        { emailId: email, password },
         {
           withCredentials: true,
         },
       );
       dispatch(addUser(res.data.user));
+      navigate("/feed");
+    } catch (error) {
+      setError(error);
+    }
+  }
+
+  async function handleSignup(event) {
+    event.preventDefault();
+    setError("");
+    try {
+      const res = await axios.post(
+        `${BACKEND_API}/auth/signup`,
+        {
+          firstName,
+          lastName,
+          emailId: email,
+          password,
+          phoneNumber,
+          gender,
+          about,
+          skills: skills
+            .split(",")
+            .map((skill) => skill.trim())
+            .filter(Boolean),
+          profilePicture,
+        },
+        { withCredentials: true },
+      );
+      
+      dispatch(addUser(res.data));
       navigate("/feed");
     } catch (error) {
       setError(error);
@@ -45,14 +88,14 @@ const Login = () => {
         <div className="relative p-8 sm:p-10">
           <div className="mb-8 text-center">
             <h2 className="mt-3 text-4xl font-bold tracking-tight text-white">
-              Log in
+              {isLogin ? "Log in" : "Create account"}
             </h2>
             <p className="mt-3 text-sm text-slate-400">
               Sign in to continue to your account
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={isLogin ? handleLogin : handleSignup} className="space-y-6">
             <fieldset className="space-y-2">
               <label
                 className="block text-sm font-medium text-slate-200"
@@ -69,6 +112,112 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </fieldset>
+
+            {!isLogin && (
+              <>
+                <fieldset className="space-y-2">
+                  <label
+                    className="block text-sm font-medium text-slate-200"
+                    htmlFor="firstName"
+                  >
+                    First name
+                  </label>
+                  <input
+                    id="firstName"
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </fieldset>
+                <fieldset className="space-y-2">
+                  <label
+                    className="block text-sm font-medium text-slate-200"
+                    htmlFor="lastName"
+                  >
+                    Last name
+                  </label>
+                  <input
+                    id="lastName"
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </fieldset>
+                <fieldset className="space-y-2">
+                  <label
+                    className="block text-sm font-medium text-slate-200"
+                    htmlFor="phoneNumber"
+                  >
+                    Phone number
+                  </label>
+                  <input
+                    id="phoneNumber"
+                    type="tel"
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                  />
+                </fieldset>
+                <fieldset className="space-y-2">
+                  <label
+                    className="block text-sm font-medium text-slate-200"
+                    htmlFor="gender"
+                  >
+                    Gender
+                  </label>
+                  <input
+                    id="gender"
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                  />
+                </fieldset>
+                <fieldset className="space-y-2">
+                  <label
+                    className="block text-sm font-medium text-slate-200"
+                    htmlFor="about"
+                  >
+                    About
+                  </label>
+                  <textarea
+                    id="about"
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                    value={about}
+                    onChange={(e) => setAbout(e.target.value)}
+                  />
+                </fieldset>
+                <fieldset className="space-y-2">
+                  <label
+                    className="block text-sm font-medium text-slate-200"
+                    htmlFor="skills"
+                  >
+                    Skills
+                  </label>
+                  <input
+                    id="skills"
+                    placeholder="AWS, JavaScript, Express"
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                    value={skills}
+                    onChange={(e) => setSkills(e.target.value)}
+                  />
+                </fieldset>
+                <fieldset className="space-y-2">
+                  <label
+                    className="block text-sm font-medium text-slate-200"
+                    htmlFor="profilePicture"
+                  >
+                    Profile picture URL
+                  </label>
+                  <input
+                    id="profilePicture"
+                    type="url"
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                    value={profilePicture}
+                    onChange={(e) => setProfilePicture(e.target.value)}
+                  />
+                </fieldset>
+              </>
+            )}
 
             <fieldset className="space-y-2">
               <label
@@ -103,6 +252,21 @@ const Login = () => {
               >
                 Log in
               </button>
+              <div className="mt-6 flex items-center justify-center gap-2 text-sm text-slate-400">
+                <span>
+                  {isLogin ? "New to DevTinder?" : "Already have an account?"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    setError("");
+                  }}
+                  className="font-semibold text-cyan-300 transition hover:text-cyan-200 hover:underline"
+                >
+                  {isLogin ? "Create an account" : "Log in"}
+                </button>
+              </div>
             </div>
           </form>
         </div>
