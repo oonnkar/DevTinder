@@ -6,8 +6,12 @@ import { addUser } from "../utils/__redux_store__/userSlice";
 import { BACKEND_API } from "../utils/constants";
 
 const Login = () => {
-  const [email, setEmail] = useState("priyaaa.patel@example.com");
-  const [password, setPassword] = useState("Priyaa@2026");
+  const urr = {
+    emailId: "aarav.sharma1@example.com",
+    password: "User@1000Strong",
+  };
+  const [email, setEmail] = useState(urr.emailId);
+  const [password, setPassword] = useState(urr.password);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,14 +24,14 @@ const Login = () => {
         `${BACKEND_API}/auth/login`,
         {
           emailId: email,
-          password : password,
+          password: password,
         },
         {
           withCredentials: true,
         },
       );
       dispatch(addUser(res.data.user));
-      navigate("/feed")
+      navigate("/feed");
     } catch (error) {
       setError(error);
     }

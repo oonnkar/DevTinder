@@ -4,7 +4,15 @@ const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/User");
 
 const userRouter = express.Router();
-const selectedUserFields = ["firstName", "lastName", "emailId"];
+const selectedUserFields = [
+  "firstName",
+  "lastName",
+  "about",
+  "skills",
+  "gender",
+  "phoneNumber",
+  "profilePicture",
+];
 
 userRouter.get("/requests/received", authMiddleWare, async (req, res) => {
   try {
@@ -47,7 +55,7 @@ userRouter.get("/connections", authMiddleWare, async (req, res) => {
 
   res
     .status(200)
-    .json({ message: "data fetched successfully", "All connections": data });
+    .json({ message: "data fetched successfully", "connections": data });
 });
 
 userRouter.get("/feed", authMiddleWare, async (req, res) => {

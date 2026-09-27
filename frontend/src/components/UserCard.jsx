@@ -2,14 +2,13 @@ import React from "react";
 
 const UserCard = ({ user }) => {
   const { firstName, lastName, emailId, profilePicture } = user;
-  const defaultImage =
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80";
+ 
 
   return (
     <div className="card bg-base-100 border border-base-200 shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden max-w-sm rounded-2xl">
       <figure className="h-64 relative">
         <img
-          src={user?.profilePicture ? user.profilePicture : defaultImage}
+          src={profilePicture}
           alt={`${firstName} ${lastName}`}
           className="h-full w-full object-cover"
         />

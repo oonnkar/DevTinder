@@ -13,7 +13,10 @@ const Body = () => {
 
   const fetchUser = async () => {
     try {
-      if(!userData) return;
+      if (!userData) {
+        navigate("/login");
+        return;
+      }
       const data = await axios.get(BACKEND_API + "/profile/view", {
         withCredentials: true,
       });
