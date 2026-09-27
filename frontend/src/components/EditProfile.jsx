@@ -13,10 +13,11 @@ const EditProfile = ({ user }) => {
   const [gender, setGender] = useState(user?.gender || fallbackValue);
   const [about, setAbout] = useState(user?.about || fallbackValue);
   const [skills, setSkills] = useState(user?.skills || fallbackValue);
+  const [popupMessage, setPopupMessage] = useState("");
 
   async function handleFormSubmit() {
     try {
-      const res = await axios.patch(
+      await axios.patch(
         BACKEND_API + "/profile/edit",
         {
           firstName,
@@ -28,8 +29,13 @@ const EditProfile = ({ user }) => {
         },
         { withCredentials: true },
       );
+      
+      setPopupMessage("Profile saved successfully.");
     } catch (error) {
       console.error("Profile update failed:", error);
+      setPopupMessage(
+        error.response?.data?.message || "Could not save your profile. Please try again.",
+      );
     }
   }
 
@@ -44,6 +50,22 @@ const EditProfile = ({ user }) => {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.18),_transparent_30%),linear-gradient(135deg,_#020817_0%,_#0f172a_40%,_#111827_100%)] px-4 py-10 text-slate-100">
+      {popupMessage && (
+        <div
+          role="alert"
+          className="fixed left-1/2 top-6 z-50 flex -translate-x-1/2 items-center gap-4 rounded-xl border border-white/10 bg-slate-900 px-5 py-4 text-white shadow-xl"
+        >
+          <span>{popupMessage}</span>
+          <button
+            type="button"
+            aria-label="Dismiss notification"
+            className="text-slate-300 hover:text-white"
+            onClick={() => setPopupMessage("")}
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div className="mx-auto max-w-2xl rounded-[28px] border border-white/10 bg-slate-950/60 p-6 shadow-2xl shadow-cyan-500/10 backdrop-blur-xl sm:p-8">
         <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-5">
           <div>
