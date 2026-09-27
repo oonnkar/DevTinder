@@ -21,6 +21,7 @@ const connectionsSlice = createSlice({
     removeConnections: (state) => {
       state.connections = null;
     },
+    removeAllConnections : () => null
   },
 });
 
@@ -29,5 +30,6 @@ export const {
   removeConnectionRequest,
   addConnections,
   removeConnections,
+  removeAllConnections
 } = connectionsSlice.actions;
 export default connectionsSlice.reducer;

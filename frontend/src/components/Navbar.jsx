@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../utils/__redux_store__/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_API } from "../utils/constants";
+import { removeAllConnections } from "../utils/__redux_store__/connectionsSlice";
+import { removeFeed } from "../utils/__redux_store__/feedSlice";
 const Navbar = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
@@ -17,6 +19,8 @@ const Navbar = () => {
         { withCredentials: true },
       );
       dispatch(removeUser());
+      dispatch(removeAllConnections());
+      dispatch(removeFeed())
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);

@@ -7,7 +7,7 @@ import {
 } from "../utils/__redux_store__/connectionsSlice";
 
 const Requests = () => {
-  const connectionRequests = useSelector((store) => store.connection.requests);
+  const connectionRequests = useSelector((store) => store.connection?.requests);
 
   const dispatch = useDispatch();
   const fetchData = async () => {

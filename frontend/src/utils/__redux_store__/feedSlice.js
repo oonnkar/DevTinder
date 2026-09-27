@@ -1,17 +1,18 @@
-import { createSlice, configureStore } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-const feeSlice = createSlice({
+const feedSlice = createSlice({
   name: "feed",
   initialState: null,
   reducers: {
     addFeed: (state, action) => {
       return action.payload;
     },
-    removeFeed: (state, action) => {
-      return null;
+    removeFeed : () => null,
+    removeUserFromFeed: (state, action) => {
+      return state.filter((user) => user._id !== action.payload);
     },
   },
 });
 
-export const { addFeed, removeFeed } = feeSlice.actions;
-export default feeSlice.reducer;
+export const { addFeed, removeUserFromFeed ,removeFeed} = feedSlice.actions;
+export default feedSlice.reducer;

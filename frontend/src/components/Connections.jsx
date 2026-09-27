@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 // http://localhost:3000/user/connections
 const Connections = () => {
-  const connections = useSelector((store) => store.connection.connections);
+  const connections = useSelector((store) => store.connection?.connections);
 
   const dispatch = useDispatch();
   const fetchData = async () => {
@@ -24,7 +24,7 @@ const Connections = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [connections]);
 
   if (!connections) return <div>Loading connections...</div>;
 
