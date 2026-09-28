@@ -13,7 +13,10 @@ const app = express();
 // Parse JSON request body
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      process.env.FRONTEND_URL || "http://44.200.13.119",
+    ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], 
     credentials: true,
   })
