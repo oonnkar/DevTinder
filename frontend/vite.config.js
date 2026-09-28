@@ -3,7 +3,7 @@ import babel from "@rolldown/plugin-babel";
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 
-const BACKEND_API = "http://localhost:3000";
+const BACKEND_API = "http://44.200.13.119:3000";
 
 export default defineConfig({
   plugins: [
