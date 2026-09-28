@@ -1,7 +1,7 @@
 const express = require("express");
 const authMiddleWare = require("../middleware/auth");
 const ConnectionRequest = require("../models/connectionRequest");
-const User = require("../models/User");
+const User = require("../models/user");
 
 const userRouter = express.Router();
 const selectedUserFields = [
@@ -53,7 +53,7 @@ userRouter.get("/connections", authMiddleWare, async (req, res) => {
 
   res
     .status(200)
-    .json({ message: "data fetched successfully", "connections": data });
+    .json({ message: "data fetched successfully", connections: data });
 });
 
 userRouter.get("/feed", authMiddleWare, async (req, res) => {

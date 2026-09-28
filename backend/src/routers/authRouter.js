@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const { validateSignupData } = require("../helper/validator");
-const User = require("../models/User");
+const User = require("../models/user");
 
 const authRouter = express.Router();
 
@@ -36,13 +36,12 @@ authRouter.post("/signup", async (req, res) => {
       about,
       skills,
     });
-    
+
     const savedUser = await user.save();
     const token = await savedUser.getJwt();
 
-
     res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
-    res.status(201).json({ message: "User created successfully", data : user });
+    res.status(201).json({ message: "User created successfully", data: user });
   } catch (error) {
     res.status(500).json({ "Error: ": error.message });
   }
