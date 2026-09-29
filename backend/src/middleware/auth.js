@@ -4,7 +4,7 @@ const User = require("../models/user");
 const authMiddleWare = async (req, res, next) => {
   const token = req?.cookies?.token;
   if (!token) return res.status(401).json({ message: "No token provided" });
-  var decoded = jwt.verify(req.cookies.token, "shhhhh");
+  var decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
 
   if (!decoded || !decoded.userId) {
     throw new Error("Invalid token");

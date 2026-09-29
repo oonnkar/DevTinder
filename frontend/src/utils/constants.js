@@ -1,3 +1,1 @@
-export const BACKEND_API = import.meta.env.DEV
-  ? "/api"
-  : import.meta.env.VITE_BACKEND_URL || "http://44.200.13.119:3000";
+export const BACKEND_API = location.hostname === 'localhost' ?  "http://localhost:3000" : "/api"

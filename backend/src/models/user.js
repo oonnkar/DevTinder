@@ -54,11 +54,13 @@ const userSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
-  }
+  },
 });
 
 userSchema.methods.getJwt = async function () {
-  return jwt.sign({ userId: this._id }, "shhhhh", { expiresIn: "1h" });
+  return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
 };
 
 userSchema.methods.validatePassword = async function (password) {

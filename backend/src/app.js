@@ -6,20 +6,20 @@ const profileRouter = require("./routers/profileRouter");
 const requestRouter = require("./routers/requestRouter");
 const userRouter = require("./routers/userRouter");
 const cors = require("cors");
-
+require("dotenv").config();
 // Create Express app
 const app = express();
 
 // Parse JSON request body
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      process.env.FRONTEND_URL || "http://44.200.13.119",
+
+    origin:[ process.env.FRONTEND_DEV_URL, 
+       process.env.FRONTEND_URL || "http://44.200.13.119",
     ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], 
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
-  })
+  }),
 );
 
 app.use(express.json());
@@ -36,8 +36,10 @@ connectDB()
   .then(() => {
     console.log("database connection successful");
 
-    app.listen(3000, () =>
-      console.log("server is successfully listening on port 3000"),
+    app.listen(process.env.PORT, () =>
+      console.log(
+        "server is successfully listening on port " + process.env.PORT,
+      ),
     );
   })
   .catch((error) => {

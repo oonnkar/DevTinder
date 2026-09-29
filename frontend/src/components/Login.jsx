@@ -17,8 +17,12 @@ const getErrorMessage = (error, fallback) => {
 };
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const urr = {
+    emailId: "aarav.sharma1@example.com",
+    password: "User@1000Strong",
+  };
+  const [email, setEmail] = useState(urr.emailId);
+  const [password, setPassword] = useState(urr.password);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -53,7 +57,9 @@ const Login = () => {
       dispatch(addUser(res.data.user));
       navigate("/feed");
     } catch (loginError) {
-      setError(getErrorMessage(loginError, "Unable to log in. Please try again."));
+      setError(
+        getErrorMessage(loginError, "Unable to log in. Please try again."),
+      );
     }
   }
 
@@ -115,7 +121,12 @@ const Login = () => {
       dispatch(addUser(res.data.data || res.data.user || res.data));
       navigate("/feed");
     } catch (signupError) {
-      setError(getErrorMessage(signupError, "Unable to create your account. Please try again."));
+      setError(
+        getErrorMessage(
+          signupError,
+          "Unable to create your account. Please try again.",
+        ),
+      );
     }
   }
 
@@ -134,7 +145,10 @@ const Login = () => {
             </p>
           </div>
 
-          <form onSubmit={isLogin ? handleLogin : handleSignup} className="space-y-6">
+          <form
+            onSubmit={isLogin ? handleLogin : handleSignup}
+            className="space-y-6"
+          >
             <fieldset className="space-y-2">
               <label
                 className="block text-sm font-medium text-slate-200"
