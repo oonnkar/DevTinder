@@ -6,7 +6,6 @@ const authMiddleWare = require("../middleware/auth");
 const {
   validateWebhookSignature,
 } = require("razorpay/dist/utils/razorpay-utils");
-const { useInsertionEffect } = require("react");
 const User = require("../models/user");
 
 const memberShipAmount = {
