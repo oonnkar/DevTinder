@@ -1,16 +1,19 @@
 const express = require("express");
-const connectDB = require("./config/database");
 var cookieParser = require("cookie-parser");
+
+const connectDB = require("./config/database");
+
 const authRouter = require("./routers/authRouter");
 const profileRouter = require("./routers/profileRouter");
 const requestRouter = require("./routers/requestRouter");
 const userRouter = require("./routers/userRouter");
 const cors = require("cors");
+const paymentRouter = require("./routers/paymentRouter");
+
 require("dotenv").config();
-// Create Express app
+
 const app = express();
 
-// Parse JSON request body
 app.use(
   cors({
 
@@ -30,6 +33,7 @@ app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
 app.use("/request", requestRouter);
 app.use("/user", userRouter);
+app.use("/payment", paymentRouter);
 
 // Connect DB and start server
 connectDB()

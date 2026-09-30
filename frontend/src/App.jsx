@@ -9,6 +9,7 @@ import appStore from "./utils/__redux_store__/appStore";
 import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
+import Premium from "./components/Premium";
 
 const App = () => {
   return (
@@ -24,6 +25,8 @@ const App = () => {
               element={<Connections></Connections>}
             ></Route>
             <Route path="/requests" element={<Requests></Requests>}></Route>
+            <Route path="/premium" element={<Premium></Premium>}></Route>
+            
           </Route>
         </Routes>
       </BrowserRouter>

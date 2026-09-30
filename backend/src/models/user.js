@@ -55,6 +55,8 @@ const userSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
   },
+  isPremium: { type: Boolean, default: false },
+  membershipType: { type: String },
 });
 
 userSchema.methods.getJwt = async function () {
