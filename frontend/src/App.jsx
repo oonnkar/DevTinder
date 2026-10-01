@@ -10,6 +10,7 @@ import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import Premium from "./components/Premium";
+import Chat from "./components/Chat";
 
 const App = () => {
   return (
@@ -26,7 +27,7 @@ const App = () => {
             ></Route>
             <Route path="/requests" element={<Requests></Requests>}></Route>
             <Route path="/premium" element={<Premium></Premium>}></Route>
-            
+            <Route path="/chat/:id" element={<Chat></Chat>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -24,7 +24,7 @@ const EditProfile = ({ user }) => {
   const [isError, setIsError] = useState(false);
 
   async function handleFormSubmit() {
-    if (!firstName.trim() || !lastName.trim() || !phoneNumber.trim()) {
+    if (!firstName || !lastName || !phoneNumber) {
       setPopupMessage("Please fill in your first name, last name, and phone number.");
       setIsError(true);
       return;
@@ -34,12 +34,12 @@ const EditProfile = ({ user }) => {
       await axios.patch(
         BACKEND_API + "/profile/edit",
         {
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          phoneNumber: phoneNumber.trim(),
+          firstName: firstName,
+          lastName: lastName,
+          phoneNumber: phoneNumber,
           gender,
-          about: about.trim(),
-          skills: skills.trim(),
+          about: about,
+          skills: skills,
         },
         { withCredentials: true },
       );
