@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { createSocketConnection } from "../utils/socket";
+import { BACKEND_API } from "../utils/constants";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -10,14 +12,35 @@ const Chat = () => {
   const user = useSelector((store) => store.user);
   const userId = user?._id;
 
+  const fetchChatMessages = async () => {
+    const chat = await axios.get(BACKEND_API + "/chat/" + id, {
+      withCredentials: true,
+    });
+    const chatMessages = chat.data.messages.map((message) => {
+      return {
+        senderId: message.senderId._id,
+        firstName: message.senderId.firstName,
+        lastName: message.senderId.lastName,
+        text: message.text,
+      };
+    });
+    setMessages(chatMessages);
+  };
+
+  useEffect(() => {
+    fetchChatMessages();
+  }, []);
+
   useEffect(() => {
     if (!userId) return;
-
     const socket = createSocketConnection();
     socket.emit("joinChat", { userId, id });
 
-    socket.on("messageReceived", ({ firstName, text }) => {
-      setMessages((currentMessages) => [...currentMessages, { text, firstName }]);
+    socket.on("messageReceived", ({ firstName, text, userId: senderId }) => {
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        { text, firstName, senderId },
+      ]);
     });
 
     return () => {
@@ -33,7 +56,10 @@ const Chat = () => {
     const socket = createSocketConnection();
     socket.emit("sendMessage", { firstName: user.firstName, userId, id, text });
 
-    setMessages((currentMessages) => [...currentMessages, { text }]);
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      { text, senderId: userId, firstName: user.firstName },
+    ]);
     setInput("");
   };
 
@@ -50,16 +76,22 @@ const Chat = () => {
         {messages.map((message, index) => (
           <div
             key={index}
-            className="flex flex-col gap-1 rounded-xl border border-slate-700 bg-slate-800 px-4 py-3"
+            className={`flex w-full ${message.senderId === userId ? "justify-start" : "justify-end"}`}
           >
-            {message.firstName && (
-              <p className="m-0 text-sm font-semibold text-sky-400">
-                {message.firstName}
-              </p>
-            )}
-            <p className="m-0 break-words text-sm text-slate-100">
-              {message.text}
-            </p>
+            <div
+              className={`flex max-w-[85%] flex-col gap-1 rounded-2xl px-4 py-3 shadow-sm sm:max-w-[75%] ${
+                message.senderId === userId
+                  ? "rounded-bl-md bg-sky-700 text-white"
+                  : "rounded-br-md border border-slate-700 bg-slate-800 text-slate-100"
+              }`}
+            >
+              {message.senderId !== userId && message.firstName && (
+                <p className="m-0 text-xs font-semibold text-sky-300">
+                  {message.firstName}
+                </p>
+              )}
+              <p className="m-0 break-words text-sm">{message.text}</p>
+            </div>
           </div>
         ))}
       </div>

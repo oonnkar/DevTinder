@@ -10,6 +10,8 @@ const requestRouter = require("./routers/requestRouter");
 const userRouter = require("./routers/userRouter");
 const cors = require("cors");
 const paymentRouter = require("./routers/paymentRouter");
+const charRouter = require("./routers/chatRouter");
+
 const initSocket = require("./helper/socket");
 
 require("dotenv").config();
@@ -39,6 +41,7 @@ app.use("/profile", profileRouter);
 app.use("/request", requestRouter);
 app.use("/user", userRouter);
 app.use("/payment", paymentRouter);
+app.use("/chat", charRouter);
 
 
 // Connect DB and start server

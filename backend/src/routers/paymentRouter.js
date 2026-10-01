@@ -15,7 +15,6 @@ const memberShipAmount = {
 
 paymentRouter.post("/create", authMiddleWare, async (req, res) => {
   try {
-    console.log("request came here");
     const { firstName, lastName, emailId } = req.user;
     const options = {
       amount: memberShipAmount[req.body.membershipType],
@@ -30,7 +29,6 @@ paymentRouter.post("/create", authMiddleWare, async (req, res) => {
     };
 
     const order = await razInstance.orders.create(options);
-    console.log(order);
 
     const payment = new Payment({
       userId: req.user.id,

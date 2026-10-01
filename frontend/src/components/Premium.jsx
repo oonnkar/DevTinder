@@ -10,7 +10,6 @@ const Premium = () => {
         { membershipType: type },
         { withCredentials: true },
       );
-      console.log(order);
 
       const { amount, currency, notes,orderId, recipt, status,  userId } = order.data;
       const options = {

@@ -5,8 +5,9 @@ const initSocket = (server) => {
   const io = new Server(server, {
     cors: {
       origin: [
-        "http://localhost:5173",
-        "http://44.200.13.119",
+        process.env.FRONTEND_DEV_URL || "http://localhost:5173",
+        process.env.FRONTEND_URL || "http://44.200.13.119",
+        "http://127.0.0.1:5173",
       ],
       methods: ["GET", "POST"],
       credentials: true,
@@ -14,12 +15,10 @@ const initSocket = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("User connected:", socket.id);
 
     socket.on("joinChat", ({ userId, id }) => {
       const room = [userId, id].sort().join("_");
 
-      console.log("Joining room:", room);
 
       socket.join(room);
     });
@@ -46,7 +45,7 @@ const initSocket = (server) => {
 
         await chat.save();
 
-        io.to(room).emit("messageReceived", {
+        socket.to(room).emit("messageReceived", {
           firstName,
           text,
         });

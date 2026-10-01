@@ -47,7 +47,7 @@ const Connections = () => {
             const userId = connectionUser?._id || user?._id || index;
 
             return (
-              <div>
+              <div key={index}>
                 <li
                   key={userId}
                   className="overflow-hidden rounded-2xl bg-slate-900 shadow-lg ring-1 ring-slate-700/80"

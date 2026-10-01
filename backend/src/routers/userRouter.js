@@ -34,7 +34,6 @@ userRouter.get("/requests/received", authMiddleWare, async (req, res) => {
 
 userRouter.get("/connections", authMiddleWare, async (req, res) => {
   const loggedInUser = req.user;
-
   const connectionRequests = await ConnectionRequest.find({
     $or: [
       { fromUser: loggedInUser._id, status: "accepted" },
@@ -43,14 +42,12 @@ userRouter.get("/connections", authMiddleWare, async (req, res) => {
   })
     .populate("fromUser", selectedUserFields)
     .populate("toUser", selectedUserFields);
-
   const data = connectionRequests.map((request) => {
     if (request.fromUser._id.toString() === loggedInUser._id.toString()) {
       return request.toUser;
     }
     return request.fromUser;
   });
-
   res
     .status(200)
     .json({ message: "data fetched successfully", connections: data });
