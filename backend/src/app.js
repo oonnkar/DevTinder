@@ -21,8 +21,9 @@ initSocket(server);
 app.use(
   cors({
     origin: [
-      process.env.FRONTEND_DEV_URL,
+      process.env.FRONTEND_DEV_URL || "http://localhost:5173",
       process.env.FRONTEND_URL || "http://44.200.13.119",
+      "http://127.0.0.1:5173",
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
